@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+
+import sys
+import json
+import subprocess
+
+swaymsg = subprocess.run(['swaymsg', '-t', 'get_tree'], stdout=subprocess.PIPE)
+data = json.loads(swaymsg.stdout)
+current = data["nodes"][1]["current_workspace"]
+
+def iterdict(d, pred):
+    for sub in d["nodes"]:
+        # print("sub", sub)
+        if isinstance(sub, dict):
+            # print("check 1", sub)
+            if pred(sub):
+                # print("check 2", sub)
+                return sub
+            else:
+                rec = iterdict(sub, pred)
+                if rec != None:
+                    return d 
+    return None
+
+def focused(d):
+    # print("tested", d)
+    if "focused" in d:
+        return bool(d["focused"])
+    return False
+    # return (("focused" in d) and d["focused"])
+
+def getWorkspace():
+    for output in data["nodes"]:
+        for workspace in output["nodes"]:
+            possible = iterdict(workspace, focused)
+            # print("pos", possible)
+            if possible != None:
+                #not None, must have been some focused
+                return possible
+            #maybe gives all the visible ones in multi monitor mode?
+    return None
+
+
+#workspace = int(data["nodes"][1]["current_workspace"])-1
+#roi = data["nodes"][1]["nodes"][workspace]
+#print(roi)
+temp = getWorkspace()
+windows = list()
+
+def getNextWindow():
+    if focus < len(windows) - 1:
+        return focus+1
+    else:
+        return 0
+
+def getPrevWindow():
+    if focus > 0:
+        return focus-1
+    else:
+        return len(windows)-1
+
+def makelist(temp):
+    for nodes in "floating_nodes", "nodes":
+        for i in range(len(temp[nodes])):
+            # print(temp[nodes][i]["name"])
+            # print()
+            if temp[nodes][i]["name"] is None:
+                makelist(temp[nodes][i])
+            elif temp[nodes][i]["visible"]:
+                windows.append(temp[nodes][i])
+
+def focused(temp_win):
+    for i in range(len(temp_win)):
+        if temp_win[i]["focused"] == True:
+           return i
+
+makelist(temp)
+#print(windows)
+# print(len(windows))
+focus = focused(windows)
+print(windows[getNextWindow()]["id"])

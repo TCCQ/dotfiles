@@ -1,0 +1,13 @@
+#aliases for bash
+alias cb="xclip -selection clipboard"
+alias br="xrandr --output eDP1 --brightness" 
+alias desert="blugon -o -S 2500"
+alias recolor="blugon -o -S 6600"
+alias bctl="bluetoothctl"
+alias make="make -j4"
+alias less="less -i"
+alias e="emacs"
+alias a="emacs -nw"
+alias demacs="emacs --daemon"
+alias ta="tmux attach"
+alias starte="startx -- -config egpu.conf"
