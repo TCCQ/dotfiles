@@ -5,21 +5,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(bongo-custom-backend-matchers '((vlc (local-file) . "opus")))
- '(bongo-enabled-backends '(vlc))
- '(bongo-insert-intermediate-headers t)
- '(custom-enabled-themes '(tsdh-dark))
- '(display-time-24hr-format t)
- '(display-time-day-and-date t)
- '(display-time-mode nil)
- '(inhibit-startup-screen t)
+ '(custom-enabled-themes '(tmu-custom))
+ '(custom-safe-themes
+   '("3d4e3644e237a95683daa73e397c4c0d1ae06bbaaf8040104232591a28bc1315" "12a07bc38295e4b06a8965db261f51ea7ea61fbf91b3ef41298bbb549d1d9403" default))
  '(menu-bar-mode nil)
- '(package-archives
-   '(("gnu" . "https://elpa.gnu.org/packages/")
-     ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-     ("melpa" . "https://melpa.org/packages/")))
- '(package-selected-packages
-   '(moe-theme ample-theme monokai-theme zenburn-theme edit-server simple-httpd melancholy-theme volume selectrum origami imenu-anywhere hydra highlight gdscript-mode free-keys folding fold-this f dumb-jump bongo))
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(transient-mark-mode nil))
@@ -28,7 +17,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(header-line ((t (:inverse-video t :box (:line-width (1 . -1) :color "red" :style released-button))))))
+ )
 
 
 ;; stuff I will always want
@@ -37,7 +26,20 @@
 
 ;; common hooks
 (add-hook 'text-mode-hook (lambda () (flyspell-mode 1)))
-(add-hook 'prog-mode-hook (lambda () (hs-minor-mode 1)))
+(add-hook 'prog-mode-hook (lambda ()
+			    (hs-minor-mode 1)))
+
+;; nice startup
+(require 'iimage)
+(setq inhibit-startup-screen t)
+(setq initial-scratch-message (concat (propertize ";; " 'invisible t)
+      "</home/tmu/.emacs.d/splashLaputa.png>
+;; scratch for lisp evaluation and unsaved text
+
+"))
+(add-hook 'emacs-startup-hook (lambda ()
+				(with-current-buffer "*scratch*"
+				  (iimage-mode 1))))
 
 ;; transparancy
 (add-to-list 'default-frame-alist '(alpha-background . 90)) ; For all new frames 
@@ -137,11 +139,16 @@
 (global-unset-key (kbd "M-c"))
 (global-set-key (kbd "M-c") 'calc)
 
+;; buffer kills
+(global-unset-key (kbd "M-k"))
+(global-set-key (kbd "M-k") 'kill-current-buffer)
+(global-set-key (kbd "M-K") 'kill-buffer-and-window)
+
 ;; compilation stuff
-(global-unset-key (kbd "M-n"))
-(global-set-key (kbd "M-n") 'compile)
 (global-unset-key (kbd "M-m"))
-(global-set-key (kbd "M-m") 'recompile)
+(global-unset-key (kbd "M-M"))
+(global-set-key (kbd "M-m") 'next-error)
+(global-set-key (kbd "M-M") 'recompile)
 
 ;; latex stuff
 (require 'tex-mode)
@@ -192,22 +199,22 @@
   (selectrum-highlight-candidates-function #'orderless-highlight-matches))
 
 ;; better in-buffer completion
-(require 'company)
-(add-hook 'prog-mode-hook (lambda ()
-			    (company-mode 1)))
-(global-unset-key (kbd "M-/"))
-(global-set-key (kbd "M-/") 'company-complete)
+;; (require 'company)
+;; (add-hook 'prog-mode-hook (lambda ()
+;; 			    (company-mode 1)))
+;; (global-unset-key (kbd "M-/"))
+;; (global-set-key (kbd "M-/") 'company-complete)
 
 ;; exwm stuff
 ;;(load "~/.emacs.d/exwm-pref.el")
 
 ;; mail stuff
-;; (load "~/.emacs.d/mail.el")
+(load "~/.emacs.d/mail.el")
 
 ;; music
-;; (load "~/.emacs.d/bongo.el")
-;; (load "~/.emacs.d/youtube-dl.el")
-;; (load "~/.emacs.d/bongo-populate.el")
+(load "~/.emacs.d/bongo.el")
+(load "~/.emacs.d/youtube-dl.el")
+(load "~/.emacs.d/bongo-populate.el")
 
 ;; allow using emacsclient
 (server-start)
@@ -215,24 +222,29 @@
 ;; don't ask about killing buffers
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 
-;; allow doing webpage startup
-;; (use-package edit-server
-;;   :ensure t
-;;   :commands edit-server-start
-;;   :init (if after-init-time
-;;               (edit-server-start)
-;;             (add-hook 'after-init-hook
-;;                       #'(lambda() (edit-server-start))))
-;;   :config (setq edit-server-new-frame-alist
-;;                 '((name . "Edit with Emacs FRAME")
-;;                   (top . 200)
-;;                   (left . 200)
-;;                   (width . 80)
-;;                   (height . 25)
-;;                   (minibuffer . t)
-;;                   (menu-bar-lines . t))))
+;; don't ask about kill processes
+(setq confirm-kill-processes nil)
 
-;; (load-file "~/.emacs.d/async-eval.el")
+;; allow doing webpage startup
+(use-package edit-server
+  :ensure t
+  :commands edit-server-start
+  :init (if after-init-time
+              (edit-server-start)
+            (add-hook 'after-init-hook
+                      #'(lambda() (edit-server-start))))
+  :config (setq edit-server-new-frame-alist
+                '((name . "Edit with Emacs FRAME")
+                  (top . 200)
+                  (left . 200)
+                  (width . 80)
+                  (height . 25)
+                  (minibuffer . t)
+                  (menu-bar-lines . t))))
+
+(load-file "~/.emacs.d/async-eval.el")
+
+(load-file "~/.emacs.d/project-stuff.el")
 
 (put 'dired-find-alternate-file 'disabled nil)
 (put 'upcase-region 'disabled nil)
