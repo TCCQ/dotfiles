@@ -7,6 +7,10 @@
 
 (add-hook 'xref-backend-functions 'gxref-xref-backend)
 
+;; don't forget that eglot exists
+;; (global-company-mode 1)
+;; (setq company-idle-delay 0.1)
+
 ;; (require 'semantic/sb)
 ;; (setq semantic-default-submodes
 ;;       '(global-semantic-idle-scheduler-mode
@@ -17,10 +21,8 @@
 ;;      global-semantic-mru-bookmark-mode
 ;;      global-semantic-idle-local-symbol-highlight-mode)
 ;;       semantic-idle-scheduler-work-idle-time 5)
-;; (semantic-mode 1)
+;; (semantic-mode 1
 ;; (global-ede-mode t)
-
-;; don't forget that eglot exists
 
 ;; better commenting stuff
 (global-set-key (kbd "C-x C-;") 'comment-or-uncomment-region)
@@ -29,6 +31,9 @@
 
 (setq asm-comment-char ?#)
 
+;; nice eglot binds
+(global-set-key (kbd "C-c f") 'eglot-code-action-quickfix)
+(global-set-key (kbd "C-c C-f") 'eglot-code-actions)
 
 ;; deal white whitespace better
 (setq whitespace-style
@@ -37,6 +42,8 @@
 (add-hook 'prog-mode-hook (lambda ()
                             (whitespace-mode 1)
                             (display-fill-column-indicator-mode 1)))
+
+(global-hl-todo-mode 1)
 
 
 (require 'sr-speedbar "~/.emacs.d/sr-speedbar.el" nil)
@@ -58,6 +65,8 @@
 (define-key speedbar-mode-map (kbd "q") 'sr-speedbar-toggle)
 (global-unset-key (kbd "M-i"))
 (global-set-key (kbd "M-i") 'speedbar-switch-and-setup)
+
+(global-set-key (kbd "M-Z") 'suspend-frame)
 
 ;; indent code when pasting, from
 ;; https://trey-jackson.blogspot.com/2008/03/emacs-tip-15-indent-yanked-code.html
@@ -93,6 +102,19 @@ BEG and END define the region."
     (let ((transient-mark-mode nil))
     (yank-advised-indent-function (region-beginning) (region-end)))))
 
+(defadvice evil-paste-before (after yank-indent activate)
+  "If current mode is one of 'yank-indent-modes, indent yanked text (with prefix arg don't indent)."
+  (if (and (not (ad-get-arg 0))
+           (member major-mode yank-indent-modes))
+      (let ((transient-mark-mode nil))
+    (yank-advised-indent-function (region-beginning) (region-end)))))
+
+(defadvice evil-paste-after (after yank-indent activate)
+  "If current mode is one of 'yank-indent-modes, indent yanked text (with prefix arg don't indent)."
+  (if (and (not (ad-get-arg 0))
+           (member major-mode yank-indent-modes))
+      (let ((transient-mark-mode nil))
+    (yank-advised-indent-function (region-beginning) (region-end)))))
 
 
 ;; make ibuffer play with projectile
@@ -109,6 +131,12 @@ BEG and END define the region."
 (setq comint-scroll-to-bottom-on-output t)
 
 ;; code folding
+
+(add-to-list 'load-path "~/.emacs.d/")
+;; (require 'ts-foldV)
+
+(autoload 'hide-lines "hide-lines" "Hide lines based on a regexp" t)
+(global-set-key (kbd "C-c /") 'hide-lines)
 
 ;; region folding
 (autoload 'fold-this "fold-this" "arbitrary folding" t)
@@ -168,13 +196,28 @@ BEG and END define the region."
                             (hs-minor-mode 1)
                             ;; (flymake-mode 1)
                             (spell-fu-mode 0)
+                            (superword-mode 1)
                             (add-hook 'before-save-hook (lambda () (clean-prog-file (current-buffer))))))
 
-(use-package flymake-diagnostic-at-point
-  :after flymake
-  :config
-  (setq flymake-diagnostic-at-point-timer-delay 1)
-  (add-hook 'flymake-mode-hook #'flymake-diagnostic-at-point-mode))
+;; (use-package flymake-diagnostic-at-point
+;;   :after flymake
+;;   :config
+;;   (setq flymake-diagnostic-at-point-timer-delay 1)
+;;   (add-hook 'flymake-mode-hook #'flymake-diagnostic-at-point-mode))
+
+(use-package sideline
+  :init
+  (setq sideline-backends-skip-current-line t  ; don't display on current line
+        sideline-order-left 'down              ; or 'up
+        sideline-order-right 'up               ; or 'down
+        sideline-format-left "%s   "           ; format for left aligment
+        sideline-format-right "   %s"          ; format for right aligment
+        sideline-priority 100                  ; overlays' priority
+        sideline-display-backend-name t)      ; display the backend name
+  :hook ((flycheck-mode . sideline-mode)   ; for `sideline-flycheck`
+         (flymake-mode  . sideline-mode))  ; for `sideline-flymake`
+  :init
+  (setq sideline-backends-right '(sideline-flymake)))
 
 (setq rustic-lsp-setup-p nil)
 
@@ -205,6 +248,7 @@ BEG and END define the region."
 
 (require 'evil)
 (evil-set-initial-state 'vterm-mode 'emacs)
+(evil-define-key 'normal global-map (kbd "SPC i") 'imenu)
 
 (define-key eshell-mode-map (kbd "M-o") 'other-window)
 (define-key eshell-mode-map (kbd "M-W") 'switch-buffer)
@@ -213,8 +257,6 @@ BEG and END define the region."
                                           (recenter-top-bottom 0)))
 
 ;; compilation stuff
-(global-unset-key (kbd "M-m"))
-(global-unset-key (kbd "M-M"))
 (global-set-key (kbd "M-m") (lambda ()
                               (interactive)
                               (if flymake-mode
@@ -224,20 +266,12 @@ BEG and END define the region."
 (setq compilation-always-kill t
       compilation-scroll-output t)
 
-;; better finding things
-(global-set-key (kbd "C-s") 'swiper)
+;; better searching
+(setq counsel-grep-base-command
+      "rg -i -M 120 --no-heading --line-number --color never '%s' %s")
+(global-set-key (kbd "C-s") 'counsel-grep-or-swiper)
 (global-set-key (kbd "C-S-s") 'isearch-forward)
-(global-set-key (kbd "C-r") 'counsel-ag)
-
-;; perspective and friends
-;; (require 'perspective)
-;; (customize-set-variable 'persp-mode-prefix-key (kbd "M-p"))
-;; (global-set-key (kbd "C-x C-b") 'persp-ibuffer)
-;; (persp-mode)
-;; (global-set-key (kbd "C-x b") 'persp-switch-to-buffer*)
-;; (global-set-key (kbd "M-W") 'persp-switch-to-buffer*)
-;; (global-set-key (kbd "C-x k") 'persp-kill-buffer*)
-
+(define-key evil-normal-state-map (kbd "C-r") 'counsel-rg)
 
 (require 'persp-mode)
 (persp-mode 1)
@@ -267,6 +301,7 @@ BEG and END define the region."
         persp-kill-foreign-buffer-behaviour 'dont-ask)
   (global-set-key (kbd "M-p") 'persp-key-map)
   (global-set-key (kbd "C-x b") #'persp-switch-to-buffer)
+  (global-set-key (kbd "C-x B") #'switch-to-buffer)
   (global-set-key (kbd "C-x C-b") (lambda ()
                                     (interactive)
                                     (with-persp-buffer-list () (ibuffer))))

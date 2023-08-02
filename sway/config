@@ -15,8 +15,6 @@ set $term foot
 # on the original workspace that the command was run on.
 set $menu exec wofi -G --show run,drun
 
-exec swayrd 1>/dev/null 2>/dev/null
-#this think doesnt stop when sway dies
 
 #general preferences
 focus_follows_mouse no
@@ -27,9 +25,13 @@ input type:keyboard {
       repeat_rate 35
 #      xkb_file ~/.xkb/symbols/tmucustom.xkb
        xkb_options compose:ralt
+       #,grp:rctrl_toggle
+       xkb_numlock enabled
+#        xkb_layout us,us
+#        xkb_variant ,dvorak
 }
 input type:touchpad {
-      dwt enabled
+      dwt disabled
       tap enabled
       drag disabled
       drag_lock disabled
@@ -38,15 +40,20 @@ input type:touchpad {
 }
 
 #specfically the little red one
-#input "1739:52619:SYNA8006:00_06CB:CD8B_Mouse" {
+input "1739:52619:SYNA8006:00_06CB:CD8B_Mouse" {
 #      pointer_accel -1
 #      accel_profile flat
 #      scroll_factor 0.25
-#}
+       dwt disabled
+}
 
+for_window [app_id=mpv] floating enable
 
 #start language switcher
 exec fcitx5 -d
+
+#notifs
+exec mako
 
 #handle monitors properly
 exec_always bash -c 'if $(swaymsg -t get_outputs | grep -q -F "HDMI"); then swaymsg output eDP-1 disable; swaymsg output HDMI-A-1 enable; swaymsg output DP-2 enable; else swaymsg output eDP-1 enable; swaymsg output HDMI-A-1 disable; swaymsg output DP-2 disable; fi'
@@ -73,45 +80,48 @@ output DP-2 {
       mode 1920x1080@60Hz
 }
 
+
+#
+# Status Bar:
+#
+# Read `man 5 sway-bar` for more information about this section.
+bar {
+    swaybar_command waybar
+#     position bottom
+#     height 20
+
+#     # When the status_command prints a new line to stdout, swaybar updates.
+#     # The default just shows the current date and time.
+#     # status_command while date +'%Y-%m-%d %I:%M:%S %p'; do sleep 1; done
+
+#     # colors {
+#         # statusline #ffffff
+#         # background #323232
+#         # inactive_workspace #32323200 #32323200 #d0d0d0
+#     # }
+}
+
 #theming stuff
 #titlebar_border_thickness 2
 #no extra padding
-titlebar_padding 2 
+# titlebar_padding 2
 #hide_edge_borders both
 #smart_borders on
-default_border none
-font monospace 10
 workspace_layout stacking
-focus_wrapping no
+focus_wrapping yes
 show_marks on
-
-
-### I want to be able to open a bunch of stuff quickly on startup and have it go the right place
-for_window [app_id="foot" title="terminal"] {
-  move container to workspace T
-  mark "t"
-  fullscreen
-}
-
-
-
-exec foot -T "terminal"
-#bindsym $mod+Shift+s exec vivaldi-stable; exec brave; exec foot -T "terminal"
-
-
-# things I want to toggle
-#bindsym $mod+m [title="Messages for web"] scratchpad show
-#bindsym $mod+n [class="Spotify"] scratchpad show
-
-
-### dedicated terminal
-# I want a permanent terminal that is fullscreened
-bindsym $mod+Shift+Return exec ~/.config/sway/switch.sh
-
-### marking
-# using sway-marker
-bindsym $mod+bracketright exec sway-marker mark
-bindsym $mod+bracketleft exec sway-marker goto
+# start in normal state
+default_border none
+titlebar_border_thickness 0
+titlebar_padding 2
+font monospace 10
+# bar mode dock
+# two modes, with and without metadata
+bindsym $mod+g default_border none, titlebar_border_thickness 0, titlebar_padding 2, font monospace 10, bar mode dock
+bindsym $mod+Shift+g default_border pixel 0, titlebar_border_thickness 0, titlebar_padding 0, font monospace 0, bar mode hide
+# more jumping stuff
+bindsym --to-code $mod+m exec sway-marker mark
+bindsym --to-code $mod+Shift+m exec sway-marker goto
 
 ### Key bindings
 #
@@ -127,13 +137,13 @@ bindsym $mod+Shift+q kill
 bindsym $mod+d exec $menu
 
 # get me to emacs
-bindsym $mod+p exec ~/.config/sway/toEmacs.sh
+bindsym $mod+Shift+p exec ~/.config/sway/toEmacs.sh
 
 # make a new emacs frame here
-bindsym $mod+Shift+p exec emacsclient -c
+bindsym $mod+p exec emacsclient -c --alternate-editor=emacs
 
-# start throwaway browser
-bindsym $mod+e exec MOZ_ENABLE_WAYLAND=1 BDK_BACKEND=wayland firefox
+# start browser
+bindsym $mod+e exec firefox
 
 # start quick-open menu
 #bindsym $mod+o exec $term --title quicklauncher -e bash -c 'read line; eval $line | less -r'
@@ -168,6 +178,9 @@ bindsym XF86MonBrightnessUp exec brightnessctl -e s +10%
 bindsym $mod+grave exec systemctl suspend
 bindsym $mod+Escape exec sh -c 'swaylock -i /home/tmu/Pictures/capture/installsource.png -l -e -t --indicator-radius 100 & systemctl suspend'
 
+bindsym $mod+w exec sh -c '/home/tmu/.config/sway/switch.py'
+
+
 #
 # Moving around:
 #
@@ -177,11 +190,21 @@ bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
 # Move the focused window with the same, but add Shift
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
+
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
 #
 # Workspaces:
 #
@@ -227,8 +250,8 @@ bindsym $mod+v splitv
 
 # Switch the current container between different layout styles
 bindsym $mod+s layout stacking #not sure I need, I'll leave it
-bindsym $mod+w exec swayr switch-window
-#bindsym $mod+e layout toggle split
+bindsym $mod+y layout tabbed
+bindsym $mod+t layout toggle split
 
 # Make the current focus fullscreen
 bindsym $mod+f fullscreen
@@ -271,25 +294,5 @@ mode "resize" {
     bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
-
-#
-# Status Bar:
-#
-# Read `man 5 sway-bar` for more information about this section.
-bar {
-    swaybar_command waybar
-#     position bottom
-#     height 20
-
-#     # When the status_command prints a new line to stdout, swaybar updates.
-#     # The default just shows the current date and time.
-#     # status_command while date +'%Y-%m-%d %I:%M:%S %p'; do sleep 1; done
-
-#     # colors {
-#         # statusline #ffffff
-#         # background #323232
-#         # inactive_workspace #32323200 #32323200 #d0d0d0
-#     # }
-}
 
 include /etc/sway/config.d/*

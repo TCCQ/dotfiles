@@ -6,6 +6,90 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(comment-style 'extra-line)
+ '(connection-local-criteria-alist
+   '(((:application tramp :protocol "flatpak")
+      tramp-container-connection-local-default-flatpak-profile)
+     ((:application tramp)
+      tramp-connection-local-default-system-profile tramp-connection-local-default-shell-profile)
+     ((:application eshell)
+      eshell-connection-default-profile)))
+ '(connection-local-profile-alist
+   '((tramp-container-connection-local-default-flatpak-profile
+      (tramp-remote-path "/app/bin" tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin"))
+     (tramp-connection-local-darwin-ps-profile
+      (tramp-process-attributes-ps-args "-acxww" "-o" "pid,uid,user,gid,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "state=abcde" "-o" "ppid,pgid,sess,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etime,pcpu,pmem,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (euid . number)
+       (user . string)
+       (egid . number)
+       (comm . 52)
+       (state . 5)
+       (ppid . number)
+       (pgrp . number)
+       (sess . number)
+       (ttname . string)
+       (tpgid . number)
+       (minflt . number)
+       (majflt . number)
+       (time . tramp-ps-time)
+       (pri . number)
+       (nice . number)
+       (vsize . number)
+       (rss . number)
+       (etime . tramp-ps-time)
+       (pcpu . number)
+       (pmem . number)
+       (args)))
+     (tramp-connection-local-busybox-ps-profile
+      (tramp-process-attributes-ps-args "-o" "pid,user,group,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "stat=abcde" "-o" "ppid,pgid,tty,time,nice,etime,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (user . string)
+       (group . string)
+       (comm . 52)
+       (state . 5)
+       (ppid . number)
+       (pgrp . number)
+       (ttname . string)
+       (time . tramp-ps-time)
+       (nice . number)
+       (etime . tramp-ps-time)
+       (args)))
+     (tramp-connection-local-bsd-ps-profile
+      (tramp-process-attributes-ps-args "-acxww" "-o" "pid,euid,user,egid,egroup,comm=abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "-o" "state,ppid,pgid,sid,tty,tpgid,minflt,majflt,time,pri,nice,vsz,rss,etimes,pcpu,pmem,args")
+      (tramp-process-attributes-ps-format
+       (pid . number)
+       (euid . number)
+       (user . string)
+       (egid . number)
+       (group . string)
+       (comm . 52)
+       (state . string)
+       (ppid . number)
+       (pgrp . number)
+       (sess . number)
+       (ttname . string)
+       (tpgid . number)
+       (minflt . number)
+       (majflt . number)
+       (time . tramp-ps-time)
+       (pri . number)
+       (nice . number)
+       (vsize . number)
+       (rss . number)
+       (etime . number)
+       (pcpu . number)
+       (pmem . number)
+       (args)))
+     (tramp-connection-local-default-shell-profile
+      (shell-file-name . "/bin/sh")
+      (shell-command-switch . "-c"))
+     (tramp-connection-local-default-system-profile
+      (path-separator . ":")
+      (null-device . "/dev/null"))
+     (eshell-connection-default-profile
+      (eshell-path-env-list))))
  '(custom-enabled-themes '(tmu-custom))
  '(custom-safe-themes
    '("6dafb31ade9ff07229faaf05c41c2ae475c44731362b792f65f3930b1a2c9cfd" "dc77e008092a5a4aa6b6ed8e4826bebf8f2fb930a8de073bf7f458efd884cca8" "d1ff3e66028f9c527298580d2a64f9e3280f07f9e94d4dada72b67ef15069441" "3d4e3644e237a95683daa73e397c4c0d1ae06bbaaf8040104232591a28bc1315" "12a07bc38295e4b06a8965db261f51ea7ea61fbf91b3ef41298bbb549d1d9403" default))
@@ -13,7 +97,7 @@
    '("/home/tmu/Desktop/eway/sway" "/home/tmu/Desktop/eway/cage" "/home/tmu/Desktop/eway/wlroots" "/home/tmu/Desktop/eway/comp" "/home/tmu/Desktop/eway"))
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(evil-snipe evil-surround markdown-preview-mode 2048-game evil ibuffer-project persp-mode-projectile-bridge persp-mode fish-mode spell-fu pyim chinese-conv esup buffer-move vertico flymake-diagnostic-at-point emms-state emms-player-simple-mpv eshell-fringe-status esh-help eshell-vterm vterm rustic benchmark-init ivy-prescient eat ivy-hydra ivy emms eyebrowse highlight dumb-jump volume workgroups async bongo hydra free-keys gxref fold-this simple-httpd xelb oauth2 imenu-anywhere popwin folding gdscript-mode))
+   '(evil-commentary frog-jump-buffer modus-themes which-key evil-collection hl-todo evil-easymotion sideline-flymake sideline-lsp zig-mode tree-sitter-langs tree-sitter company-go pyim-basedict evil-snipe evil-surround markdown-preview-mode 2048-game evil ibuffer-project persp-mode-projectile-bridge persp-mode fish-mode spell-fu pyim chinese-conv esup buffer-move vertico flymake-diagnostic-at-point emms-state emms-player-simple-mpv eshell-fringe-status esh-help eshell-vterm vterm rustic benchmark-init ivy-prescient eat ivy-hydra ivy emms eyebrowse highlight dumb-jump volume workgroups async bongo hydra free-keys gxref fold-this simple-httpd xelb oauth2 imenu-anywhere popwin folding gdscript-mode))
  '(scroll-bar-mode nil)
  '(tool-bar-mode nil)
  '(transient-mark-mode nil)
@@ -189,6 +273,11 @@ mark.  Does the same of ARG number sexps if given"
   ;; (selectrum-highlight-candidates-function #'orderless-highlight-matches)
   )
 
+(use-package which-key
+  :ensure t
+  :init
+  (which-key-mode))
+
 ;; better in-buffer completion
 ;; (require 'company)
 ;; (add-hook 'prog-mode-hook (lambda ()
@@ -242,30 +331,20 @@ mark.  Does the same of ARG number sexps if given"
 
 (autoload 'async-eval "~/.emacs.d/async-eval.el" "evaluate in another emacs process" t)
 
-(load-file "~/.emacs.d/project-stuff.el")
-
-(load-file "~/.emacs.d/single-header.el")
-
-(put 'dired-find-alternate-file 'disabled nil)
-(put 'upcase-region 'disabled nil)
-(put 'list-timers 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
-
-;; no tabs
-(setq-default indent-tabs-mode nil)
-
-;; input method stuff
-(setq rime-translate-keybindings
-      '("C-f" "C-b" "C-n" "C-p" "C-g" "<left>" "<right>" "<up>" "<down>" "<prior>" "<next>" "<delete>"))
-(setq rime-share-data-dir "~/.local/share/fcitx5/rime")
-(setq rime-show-candidate 'popup)
-
 ;; evil mode stuff
+(setq
+      evil-want-keybinding nil
+      evil-want-integration t)
+;; evil-want-C-d-scroll nil
+;;       evil-want-C-w-delete nil
+;;       evil-disable-insert-state-bindings t
+;;       evil-respect-visual-line-mode t
+(require 'evil)
+(when (require 'evil-collection nil t)
+  (evil-collection-init))
 (evil-mode 1)
+(evilem-default-keybindings "SPC")
 (define-key evil-motion-state-map (kbd "TAB") 'indent-for-tab-command)
-(setq evil-want-C-d-scroll nil
-      evil-want-C-w-delete nil
-      evil-disable-insert-state-bindings t)
 (use-package evil-surround
   :ensure t
   :config
@@ -282,6 +361,66 @@ mark.  Does the same of ARG number sexps if given"
 (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
 (define-key evil-insert-state-map (kbd "C-a") 'move-beginning-of-line)
 (define-key evil-normal-state-map (kbd "M-.") 'xref-find-definitions)
+
+(add-hook 'prog-mode-hook (lambda ()
+                           (modify-syntax-entry ?_ "w") ))
+
+;;; sashka bindings
+;; movement
+(defun evil-window-split-and-switch ()
+  "Split the window vertically and switch to the new buffer."
+  (interactive)
+  (evil-window-split)
+  (other-window 1))
+
+(defun evil-window-vsplit-and-switch ()
+  "Split the window horizontally and switch to the new buffer."
+  (interactive)
+  (evil-window-vsplit)
+  (other-window 1))
+
+(evil-define-key 'normal global-map (kbd "SPC RET") 'vterm)
+(evil-define-key 'normal global-map (kbd "SPC !") 'abort-recursive-edit)
+(evil-define-key 'normal global-map (kbd "SPC f f")  'find-file)
+
+(evil-define-key 'normal global-map (kbd "SPC SPC SPC j") 'evil-window-split-and-switch)
+(evil-define-key 'normal global-map (kbd "SPC SPC SPC k") 'evil-window-split-and-switch)
+(evil-define-key 'normal global-map (kbd "SPC SPC SPC h") 'evil-window-vsplit-and-switch)
+(evil-define-key 'normal global-map (kbd "SPC SPC SPC l") 'evil-window-vsplit-and-switch)
+(evil-define-key 'normal global-map (kbd "SPC SPC h") 'evil-window-left)
+(evil-define-key 'normal global-map (kbd "SPC SPC j") 'evil-window-down)
+(evil-define-key 'normal global-map (kbd "SPC SPC k") 'evil-window-up)
+(evil-define-key 'normal global-map (kbd "SPC SPC l") 'evil-window-right)
+(evil-define-key 'normal global-map (kbd "SPC SPC w") 'delete-window)
+(evil-define-key 'normal global-map (kbd "SPC SPC q") 'delete-window)
+(evil-define-key 'normal global-map (kbd "SPC SPC b") 'balance-windows)
+(evil-define-key 'normal global-map (kbd "SPC s s") 'save-buffer)
+(evil-define-key 'normal global-map (kbd "SPC s f")  'counsel-find-file)
+(evil-define-key 'normal global-map (kbd "SPC s r")  'counsel-rg)
+(evil-define-key 'normal global-map (kbd "SPC ;") 'frog-jump-buffer)
+
+;; frog jump stuff
+(add-hook 'frog-menu-after-init-hook (lambda ()
+                                       (setq-local avy-background nil)))
+
+(load-file "~/.emacs.d/project-stuff.el")
+
+;; (load-file "~/.emacs.d/single-header.el")
+
+(put 'dired-find-alternate-file 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'list-timers 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+
+;; no tabs
+(setq-default indent-tabs-mode nil)
+
+;; input method stuff
+(setq rime-translate-keybindings
+      '("C-f" "C-b" "C-n" "C-p" "C-g" "<left>" "<right>" "<up>" "<down>" "<prior>" "<next>" "<delete>"))
+(setq rime-share-data-dir "~/.local/share/fcitx5/rime")
+(setq rime-show-candidate 'popup)
+
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
