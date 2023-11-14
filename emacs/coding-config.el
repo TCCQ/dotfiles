@@ -39,10 +39,6 @@
 (setq whitespace-style
       '(face trailing tabs missing-newline-at-eof indentation space-after-tab space-before-tab tab-mark))
 (setq fill-column 80)
-(add-hook 'prog-mode-hook (lambda ()
-                            (whitespace-mode 1)
-                            (display-fill-column-indicator-mode 1)))
-
 (global-hl-todo-mode 1)
 
 
@@ -93,37 +89,37 @@ BEG and END define the region."
   (if (and (not (ad-get-arg 0))
            (member major-mode yank-indent-modes))
       (let ((transient-mark-mode nil))
-    (yank-advised-indent-function (region-beginning) (region-end)))))
+        (yank-advised-indent-function (region-beginning) (region-end)))))
 
 (defadvice yank-pop (after yank-pop-indent activate)
   "If current mode is one of 'yank-indent-modes, indent yanked text (with prefix arg don't indent)."
   (if (and (not (ad-get-arg 0))
            (member major-mode yank-indent-modes))
-    (let ((transient-mark-mode nil))
-    (yank-advised-indent-function (region-beginning) (region-end)))))
+      (let ((transient-mark-mode nil))
+        (yank-advised-indent-function (region-beginning) (region-end)))))
 
 (defadvice evil-paste-before (after yank-indent activate)
   "If current mode is one of 'yank-indent-modes, indent yanked text (with prefix arg don't indent)."
   (if (and (not (ad-get-arg 0))
            (member major-mode yank-indent-modes))
       (let ((transient-mark-mode nil))
-    (yank-advised-indent-function (region-beginning) (region-end)))))
+        (yank-advised-indent-function (region-beginning) (region-end)))))
 
 (defadvice evil-paste-after (after yank-indent activate)
   "If current mode is one of 'yank-indent-modes, indent yanked text (with prefix arg don't indent)."
   (if (and (not (ad-get-arg 0))
            (member major-mode yank-indent-modes))
       (let ((transient-mark-mode nil))
-    (yank-advised-indent-function (region-beginning) (region-end)))))
+        (yank-advised-indent-function (region-beginning) (region-end)))))
 
 
 ;; make ibuffer play with projectile
 (require 'ibuffer)
 (add-hook 'ibuffer-hook
-    (lambda ()
-      (ibuffer-projectile-set-filter-groups)
-      (unless (eq ibuffer-sorting-mode 'alphabetic)
-        (ibuffer-do-sort-by-alphabetic))))
+          (lambda ()
+            (ibuffer-projectile-set-filter-groups)
+            (unless (eq ibuffer-sorting-mode 'alphabetic)
+              (ibuffer-do-sort-by-alphabetic))))
 
 ;; make shells and whatnot slightly better
 (require 'comint)
@@ -197,7 +193,17 @@ BEG and END define the region."
                             ;; (flymake-mode 1)
                             (spell-fu-mode 0)
                             (superword-mode 1)
-                            (add-hook 'before-save-hook (lambda () (clean-prog-file (current-buffer))))))
+                            (whitespace-mode 1)
+                            (display-fill-column-indicator-mode 1)
+                            (add-hook 'before-save-hook
+                                      (lambda ()
+                                        (if (not (eq major-mode 'makefile-gmake-mode))
+                                            (clean-prog-file (current-buffer)))))))
+
+
+(add-hook 'haskell-mode-hook (lambda ()
+                               (evil-define-key 'normal local-map (kbd "M-.") 'haskell-jump-to-def)
+                               ))
 
 ;; (use-package flymake-diagnostic-at-point
 ;;   :after flymake
@@ -219,7 +225,6 @@ BEG and END define the region."
   :init
   (setq sideline-backends-right '(sideline-flymake)))
 
-(setq rustic-lsp-setup-p nil)
 
 ;; eshell stuff
 (require 'eshell)
@@ -248,7 +253,6 @@ BEG and END define the region."
 
 (require 'evil)
 (evil-set-initial-state 'vterm-mode 'emacs)
-(evil-define-key 'normal global-map (kbd "SPC i") 'imenu)
 
 (define-key eshell-mode-map (kbd "M-o") 'other-window)
 (define-key eshell-mode-map (kbd "M-W") 'switch-buffer)
