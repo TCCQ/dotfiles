@@ -1,0 +1,12 @@
+alias a "ALTERNATE_EDITOR=emacs emacsclient -nw"
+alias e "emacs -nw"
+alias ll "ls -al"
+alias bctl "bluetoothctl"
+alias gs "git status"
+alias gl "git log --graph --oneline --all"
+alias gch "git checkout"
+alias alm "echo -e '\a'"
+alias pp "popd"
+alias pd "pushd"
+alias sp "pushd"                # for swapping
+alias up "cd .."
