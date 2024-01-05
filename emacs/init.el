@@ -5,6 +5,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(TeX-source-correlate-method 'synctex)
+ '(TeX-source-correlate-mode t)
+ '(TeX-source-correlate-start-server t)
+ '(TeX-view-program-selection
+   '(((output-dvi has-no-display-manager) "dvi2tty")
+     ((output-dvi style-pstricks) "dvips and gv")
+     (output-dvi "Okular") (output-pdf "Okular")
+     (output-html "xdg-open")))
  '(comment-style 'extra-line)
  '(connection-local-criteria-alist
    '(((:application tramp :protocol "kubernetes")
@@ -126,21 +134,60 @@
    '("/home/tmu/Desktop/eway/sway" "/home/tmu/Desktop/eway/cage"
      "/home/tmu/Desktop/eway/wlroots" "/home/tmu/Desktop/eway/comp"
      "/home/tmu/Desktop/eway"))
+ '(evil-collection-mode-list
+   '(2048-game ag alchemist anaconda-mode apropos arc-mode atomic-chrome
+               auto-package-update beginend bluetooth bm bookmark
+               (buff-menu "buff-menu") calendar cider cmake-mode
+               color-rg comint company compile consult corfu crdt
+               (custom cus-edit) cus-theme dashboard daemons deadgrep
+               debbugs debug devdocs dictionary diff-hl diff-mode
+               dired dired-sidebar disk-usage distel doc-view docker
+               ebib ebuku edbi edebug ediff eglot elpaca ement
+               explain-pause-mode eldoc elfeed elisp-mode elisp-refs
+               elisp-slime-nav embark emms emoji epa ert eshell
+               eval-sexp-fu evil-mc eww fanyi finder flycheck flymake
+               forge free-keys geiser ggtags git-timemachine gited
+               gnus go-mode grep guix hackernews helm help helpful
+               hg-histedit hungry-delete ibuffer (image image-mode)
+               image-dired image+ imenu imenu-list (indent "indent")
+               indium info ivy js2-mode leetcode lispy lms log-edit
+               log-view lsp-ui-imenu lua-mode kotlin-mode macrostep
+               man (magit magit-repos magit-submodule) magit-section
+               magit-todos markdown-mode monky mpc mpdel mu4e
+               mu4e-conversation neotree newsticker notmuch nov
+               omnisharp org org-present org-roam osx-dictionary
+               outline p4 (package-menu package) pass (pdf pdf-view)
+               popup proced (process-menu simple) prodigy profiler
+               python quickrun racer racket-describe realgud reftex
+               replace restclient rg ripgrep rjsx-mode robe rtags
+               ruby-mode scheme scroll-lock selectrum sh-script
+               shortdoc simple simple-mpc slime sly snake so-long
+               speedbar tab-bar tablist tabulated-list tar-mode telega
+               (term term ansi-term multi-term) tetris thread tide
+               timer-list transmission trashed tuareg typescript-mode
+               vc-annotate vc-dir vc-git vdiff vertico view vlf vterm
+               vundo w3m wdired wgrep which-key woman xref xwidget
+               yaml-mode youtube-dl zmusic
+               (ztree ztree-diff ztree-dir)))
+ '(helm-minibuffer-history-key "M-p")
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(haskell-mode pyim-wbdict solarized-theme evil-commentary
-                  frog-jump-buffer evil-collection evil-easymotion
-                  sideline-flymake sideline-lsp tree-sitter company-go
-                  pyim-basedict evil-snipe evil-surround 2048-game
-                  evil ibuffer-project persp-mode-projectile-bridge
-                  persp-mode fish-mode chinese-conv esup buffer-move
-                  flymake-diagnostic-at-point emms-state
-                  emms-player-simple-mpv eshell-fringe-status esh-help
-                  eshell-vterm rustic benchmark-init ivy-prescient eat
-                  emms eyebrowse highlight dumb-jump volume workgroups
-                  async bongo hydra free-keys gxref fold-this xelb
-                  oauth2 imenu-anywhere popwin folding gdscript-mode))
+   '(2048-game async auctex benchmark-init bongo buffer-move
+               calc-prog-utils chinese-conv company-cabal company-go
+               dumb-jump eat emms emms-player-simple-mpv emms-state
+               esh-help eshell-fringe-status eshell-vterm esup evil
+               evil-collection evil-commentary evil-easymotion
+               evil-snipe evil-surround exwm eyebrowse fish-mode
+               flymake-diagnostic-at-point fold-this folding free-keys
+               frog-jump-buffer gdscript-mode gxref haskell-mode
+               helm-hoogle highlight hindent hydra ibuffer-project
+               imenu-anywhere ivy-prescient oauth2 persp-mode
+               persp-mode-projectile-bridge popwin pyim-basedict
+               pyim-wbdict rustic shm sideline-flymake sideline-lsp
+               solarized-theme tree-sitter volume workgroups xelb))
+ '(persp-restore-window-conf-method nil)
  '(scroll-bar-mode nil)
+ '(tags-revert-without-query t)
  '(tool-bar-mode nil)
  '(transient-mark-mode nil)
  '(whitespace-style
@@ -158,6 +205,10 @@
 (add-hook 'emacs-startup-hook
           (lambda ()
             (setq gc-cons-threshold (expt 2 23))))
+
+;; Don't kill scratch ever
+(with-current-buffer "*scratch*"
+  (emacs-lock-mode 'kill))
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
@@ -213,7 +264,6 @@
       (set-frame-parameter nil 'alpha-background alpha-transparency))))
 
 ;; custom func keybinds
-(global-set-key (kbd "M-w") 'copy-region-as-kill) ;;make copying not flash cursor
 (defun wrap-region-paren ()
   "Wraps the region in parens.
 Similar to pressing ( with the region active."
@@ -226,7 +276,6 @@ Similar to pressing ( with the region active."
       (goto-char (+ end 1))
       (insert ")")
     )))
-(global-set-key (kbd "M-(") 'wrap-region-paren)
 (defun zap-whitespace ()
   "zaps the whitespace around the point in both directions"
   (interactive)
@@ -238,7 +287,6 @@ Similar to pressing ( with the region active."
   (pop-mark)
   (goto-char (mark))
   (pop-mark))
-(global-set-key (kbd "M-z") 'zap-whitespace)
 (defun wrap-sexp (&optional arg)
   "Wraps the following sexp in a pair of parens.
 Places inside the new pair, with prefix arg do the same backwards, pushing the
@@ -250,39 +298,39 @@ mark.  Does the same of ARG number sexps if given"
         (push-mark)
         (insert-pair -1 ?\( ?\)))
     (insert-pair 1 ?\( ?\))))
+(global-set-key (kbd "M-w") 'copy-region-as-kill) ;;make copying not flash cursor
+(global-set-key (kbd "M-(") 'wrap-region-paren)
+(global-set-key (kbd "M-z") 'zap-whitespace)
 (global-set-key (kbd "C-M-z") 'wrap-sexp)
-
 ;;move buffers between windows in a convient way
 (require 'buffer-move)
 (global-set-key (kbd "C-x -") 'buf-move-right)
-
 ;; quick window switching
 (global-set-key (kbd "M-o") 'other-window)
-
-;; save/restore window config
-(setq current-saved-layout ?0)
-(seq-do (lambda (number)
-          (let* ((string (int-to-string number))
-                 (char (string-to-char string))
-                 (key (kbd (concat "M-" string))))
-            (global-unset-key key)
-            (global-set-key key (lambda ()
-                                  (interactive)
-                                  (window-configuration-to-register current-saved-layout)
-                                  (unless (window-configuration-p (car (get-register char)))
-                                    (window-configuration-to-register char))
-                                  (jump-to-register char)
-                                  (setq current-saved-layout char)))))
-        '(0 1 2 3 4 5 6 7 8 9))
-
 ;; get me a calculator
 (global-unset-key (kbd "M-c"))
 (global-set-key (kbd "M-c") 'calc)
-
-;; buffer kills
 (global-unset-key (kbd "M-k"))
 (global-set-key (kbd "M-k") 'kill-current-buffer)
 (global-set-key (kbd "M-K") 'kill-buffer-and-window)
+(global-set-key (kbd "M-U") 'scroll-lock-mode)
+(global-set-key (kbd "M-Q") 'auto-fill-mode)
+
+;; save/restore window config
+;; (setq current-saved-layout ?0)
+;; (seq-do (lambda (number)
+;;           (let* ((string (int-to-string number))
+;;                  (char (string-to-char string))
+;;                  (key (kbd (concat "M-" string))))
+;;             (global-unset-key key)
+;;             (global-set-key key (lambda ()
+;;                                   (interactive)
+;;                                   (window-configuration-to-register current-saved-layout)
+;;                                   (unless (window-configuration-p (car (get-register char)))
+;;                                     (window-configuration-to-register char))
+;;                                   (jump-to-register char)
+;;                                   (setq current-saved-layout char)))))
+;;         '(0 1 2 3 4 5 6 7 8 9))
 
 ;; latex stuff
 (require 'tex-mode)
@@ -409,6 +457,10 @@ mark.  Does the same of ARG number sexps if given"
 (add-hook 'prog-mode-hook (lambda ()
                            (modify-syntax-entry ?_ "w") ))
 
+(add-hook 'dired-mode-hook (lambda ()
+                             (define-key evil-normal-state-local-map (kbd "C-o")
+                                         'dired-display-file)))
+
 ;;; sashka bindings
 ;; movement
 (defun evil-window-split-and-switch ()
@@ -451,7 +503,9 @@ mark.  Does the same of ARG number sexps if given"
 
 (load-file "~/.emacs.d/coding-config.el")
 
-;; (load-file "~/.emacs.d/single-header.el")
+(load-file "~/.emacs.d/exwm-pref.el")
+
+(load-file "~/.emacs.d/single-header.el")
 
 (put 'dired-find-alternate-file 'disabled nil)
 (put 'upcase-region 'disabled nil)

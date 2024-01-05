@@ -42,25 +42,25 @@
 (global-hl-todo-mode 1)
 
 
-(require 'sr-speedbar "~/.emacs.d/sr-speedbar.el" nil)
-(defun speedbar-switch-and-setup ()
-  "Switch in and out of the speedbar, opening as necessary."
-  (interactive)
-  (if (eq major-mode 'speedbar-mode)
-      (select-window (previous-window))
-    (let ((cur (current-buffer))
-          (win (get-buffer-window "*SPEEDBAR*")))
-      (if win
-          (select-window win)
-        (sr-speedbar-toggle)
-        (select-window (get-buffer-window "*SPEEDBAR*")))
-      (sr-speedbar-refresh)
-      (speedbar-find-selected-file (buffer-file-name cur))
-      (speedbar-expand-line))))
+;; (require 'sr-speedbar "~/.emacs.d/sr-speedbar.el" nil)
+;; (defun speedbar-switch-and-setup ()
+;;   "Switch in and out of the speedbar, opening as necessary."
+;;   (interactive)
+;;   (if (eq major-mode 'speedbar-mode)
+;;       (select-window (previous-window))
+;;     (let ((cur (current-buffer))
+;;           (win (get-buffer-window "*SPEEDBAR*")))
+;;       (if win
+;;           (select-window win)
+;;         (sr-speedbar-toggle)
+;;         (select-window (get-buffer-window "*SPEEDBAR*")))
+;;       (sr-speedbar-refresh)
+;;       (speedbar-find-selected-file (buffer-file-name cur))
+;;       (speedbar-expand-line))))
 
-(define-key speedbar-mode-map (kbd "q") 'sr-speedbar-toggle)
-(global-unset-key (kbd "M-i"))
-(global-set-key (kbd "M-i") 'speedbar-switch-and-setup)
+;; (define-key speedbar-mode-map (kbd "q") 'sr-speedbar-toggle)
+;; (global-unset-key (kbd "M-i"))
+(global-set-key (kbd "M-i") 'imenu)
 
 (global-set-key (kbd "M-Z") 'suspend-frame)
 
@@ -170,6 +170,32 @@ BEG and END define the region."
   (kbd "b") 'fold-this-fold-backward
   (kbd "l") 'hs-hide-level)
 
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;        LaTeX         ;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; ##### Don't forget to configure
+;; ##### Okular to use emacs in
+;; ##### "Configuration/Configure Okular/Editor"
+;; ##### => Editor => Emacsclient. (you should see
+;; ##### emacsclient -a emacs --no-wait +%l %f
+;; ##### in the field "Command".
+
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+(setq reftex-plug-into-AUCTeX t)
+
+;; ##### Always ask for the master file
+;; ##### when creating a new TeX file.
+(setq-default TeX-master nil)
+
+;; ##### Enable synctex correlation. From Okular just press
+;; ##### Shift + Left click to go to the good line.
+(setq TeX-source-correlate-mode t
+      TeX-source-correlate-start-server t)
+
+;; ### Set Okular as the default PDF viewer.
+(eval-after-load "tex"
+  '(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Okular"))
 
 (add-hook 'tex-mode-hook (lambda ()
                            (setq spell-fu-faces-exclude
@@ -177,7 +203,8 @@ BEG and END define the region."
                                    font-lock-builtin-face
                                    font-lock-keyword-face
                                    font-lock-function-name-face
-                                   font-lock-variable-name-face))))
+                                   font-lock-variable-name-face))
+                           (outline-minor-mode 1)))
 
 (defun clean-prog-file (buffer)
   "Fixes whitespace in buffer"
@@ -201,9 +228,20 @@ BEG and END define the region."
                                             (clean-prog-file (current-buffer)))))))
 
 
+;; (add-hook 'haskell-mode-hook (lambda ()
+;;                                (evil-define-key 'normal local-map (kbd "M-.") 'haskell-jump-to-def)
+;;                                ))
+(setq haskell-tags-on-save t)
 (add-hook 'haskell-mode-hook (lambda ()
-                               (evil-define-key 'normal local-map (kbd "M-.") 'haskell-jump-to-def)
-                               ))
+                               (hindent 1)
+                               (interactive-haskell-mode 1)
+                               (eldoc-mode 1)))
+(setq haskell-process-type 'cabal-repl)
+;; (speedbar-add-supported-extension ".hs")
+(eval-after-load 'haskell-mode
+  '(define-key haskell-mode-map (kbd "C-c C-o") 'haskell-compile))
+(eval-after-load 'haskell-cabal
+  '(define-key haskell-cabal-mode-map (kbd "C-c C-o") 'haskell-compile))
 
 ;; (use-package flymake-diagnostic-at-point
 ;;   :after flymake
@@ -269,6 +307,9 @@ BEG and END define the region."
 (global-set-key (kbd "M-M") 'recompile)
 (setq compilation-always-kill t
       compilation-scroll-output t)
+;; Allow compilation buffer to be dedicated across frames
+(push '("\\*compilation\\*" . (nil (reusable-frames . t))) display-buffer-alist)
+
 
 ;; better searching
 (setq counsel-grep-base-command
@@ -278,7 +319,7 @@ BEG and END define the region."
 (define-key evil-normal-state-map (kbd "C-r") 'counsel-rg)
 
 (require 'persp-mode)
-(persp-mode 1)
+;; (persp-mode 1)
 
 
 (with-eval-after-load "persp-mode"
