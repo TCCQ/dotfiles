@@ -1,4 +1,4 @@
-;;; -*- lexical-binding: t -*-
+;;; -*- LEXICAL-binding: t -*-
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -183,16 +183,20 @@
                helm-hoogle highlight hindent hydra ibuffer-project
                imenu-anywhere ivy-prescient oauth2 persp-mode
                persp-mode-projectile-bridge popwin pyim-basedict
-               pyim-wbdict rustic shm sideline-flymake sideline-lsp
-               solarized-theme tree-sitter volume workgroups xelb))
+               pyim-cangjiedict pyim-wbdict rustic shm
+               sideline-flymake sideline-lsp solarized-theme
+               tree-sitter unicode-fonts volume workgroups xelb))
  '(persp-restore-window-conf-method nil)
+ '(pyim-assistant-scheme 'quanpin)
+ '(safe-local-variable-values '((LEXICAL-binding . t)))
  '(scroll-bar-mode nil)
  '(tags-revert-without-query t)
  '(tool-bar-mode nil)
  '(transient-mark-mode nil)
  '(whitespace-style
    '(face trailing tabs lines-tail missing-newline-at-eof indentation
-          space-after-tab space-before-tab tab-mark)))
+          space-after-tab space-before-tab tab-mark))
+ '(xref-show-definitions-function 'xref-show-definitions-buffer-at-bottom))
 
 ;; (use-package benchmark-init
 ;;   :ensure t
@@ -223,6 +227,25 @@
 (require 'spell-fu)
 (setq ispell-personal-dictionary "/home/tmu/.aspell.en.pws")
 (add-hook 'text-mode-hook (lambda () (spell-fu-mode 1)))
+
+;; chinese
+;; (require 'unicode-fonts)
+;; (unicode-fonts-setup)
+(require 'pyim)
+(require 'pyim-basedict)
+(pyim-basedict-enable)
+;; (require 'pyim-wbdict)
+(setq default-input-method "pyim")
+(setq pyim-default-scheme 'quanpin)
+;; (pyim-wbdict-v98-morphe-enable)
+;; (dolist (charset '(kana han symbol cjk-misc bopomofo))
+;;   (set-fontset-font (frame-parameter nil 'font)
+;;                     charset
+;;                     (font-spec :family "FangSong" :size 15)))
+;; (setq rime-translate-keybindings
+;;       '("C-f" "C-b" "C-n" "C-p" "C-g" "<left>" "<right>" "<up>" "<down>" "<prior>" "<next>" "<delete>"))
+;; (setq rime-share-data-dir "~/.local/share/fcitx5/rime")
+;; (setq rime-show-candidate 'popup)
 
 ;; dictionaries
 (define-prefix-command 'dict-map)
@@ -343,10 +366,10 @@ mark.  Does the same of ARG number sexps if given"
                                            (indent-for-tab-command)
                                            ))
 
-(add-hook 'tex-mode-hook (lambda ()
-                           (setq-local compile-command
-                                       (concat "pdflatex " (shell-quote-argument (buffer-file-name))))
-                           (add-hook 'after-save-hook 'recompile 0 t)))
+;; (add-hook 'tex-mode-hook (lambda ()
+;;                            (setq-local compile-command
+;;                                        (concat "pdflatex " (shell-quote-argument (buffer-file-name))))
+;;                            (add-hook 'after-save-hook 'recompile 0 t)))
 
 ;; better minibuffer complete
 (use-package vertico
@@ -515,12 +538,6 @@ mark.  Does the same of ARG number sexps if given"
 ;; no tabs
 (setq-default indent-tabs-mode nil)
 
-;; input method stuff
-(setq rime-translate-keybindings
-      '("C-f" "C-b" "C-n" "C-p" "C-g" "<left>" "<right>" "<up>" "<down>" "<prior>" "<next>" "<delete>"))
-(setq rime-share-data-dir "~/.local/share/fcitx5/rime")
-(setq rime-show-candidate 'popup)
-
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -529,5 +546,6 @@ mark.  Does the same of ARG number sexps if given"
  ;; If there is more than one, they won't work right.
  '(frog-menu-posframe-background-face ((t (:background "RoyalBlue4"))))
  '(minibuffer-prompt ((t (:background "gray10" :foreground "cyan" :box nil :weight bold))))
+ '(pyim-page ((t (:inherit default :background "#333333" :foreground "#dcdccc"))))
  '(vterm-color-blue ((t (:inherit ansi-color-bright-green)))))
 (put 'downcase-region 'disabled nil)

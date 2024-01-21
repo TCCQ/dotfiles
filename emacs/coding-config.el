@@ -203,7 +203,8 @@ BEG and END define the region."
                                    font-lock-builtin-face
                                    font-lock-keyword-face
                                    font-lock-function-name-face
-                                   font-lock-variable-name-face))
+                                   font-lock-variable-name-face
+                                   font-latex-sedate-face))
                            (outline-minor-mode 1)))
 
 (defun clean-prog-file (buffer)
