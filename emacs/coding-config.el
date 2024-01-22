@@ -31,6 +31,13 @@
 
 (setq asm-comment-char ?#)
 
+(add-hook 'asm-mode-hook
+          (lambda ()
+            (add-hook 'after-save-hook
+                      (lambda ()
+                        (shell-command
+                         "find . -iregex '.*\\.[sS]' -exec etags -l none -r '/\\([a-zA-Z0-9\\-_]+\\):/\1/' {} +")))))
+
 ;; nice eglot binds
 (global-set-key (kbd "C-c f") 'eglot-code-action-quickfix)
 (global-set-key (kbd "C-c C-f") 'eglot-code-actions)
