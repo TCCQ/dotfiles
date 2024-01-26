@@ -36,7 +36,8 @@
             (add-hook 'after-save-hook
                       (lambda ()
                         (shell-command
-                         "find . -iregex '.*\\.[sS]' -exec etags -l none -r '/\\([a-zA-Z0-9\\-_]+\\):/\1/' {} +")))))
+                         "find . -iregex '.*\\.[sS]' -exec etags -l none -r '/\\([a-zA-Z0-9\\-_]+\\):/\1/' {} +"))
+                      0 t)))
 
 ;; nice eglot binds
 (global-set-key (kbd "C-c f") 'eglot-code-action-quickfix)
