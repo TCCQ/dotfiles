@@ -1,3 +1,7 @@
+15c15
+< static const char col_cyan[]        = "#005577";
+---
+> static const char col_cyan[]        = "#ad5fed";
 49c49
 < #define MODKEY Mod1Mask
 ---
