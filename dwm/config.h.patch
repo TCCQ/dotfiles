@@ -19,15 +19,14 @@
 < 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
 ---
 > 	{ MODKEY,                       XK_o,      incnmaster,     {.i = -1 } },
-75,77c77,79
+75,77c77,78
 < 	{ MODKEY,                       XK_Return, zoom,           {0} },
 < 	{ MODKEY,                       XK_Tab,    view,           {0} },
 < 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
 ---
-> 	{ MODKEY,                       XK_m,      zoom,           {0} },
-> 	{ MODKEY,                       XK_n,      view,           {0} },
+> 	{ MODKEY,                       XK_n,      zoom,           {0} },
 > 	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
-101c103
+101c102
 < 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 ---
 > 	{ MODKEY|ShiftMask,             XK_e,      quit,           {0} },
