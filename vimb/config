@@ -1,0 +1,14 @@
+set editor-command=ALTERNATE_EDITOR=emacs emacsclient -n %s
+set webgl=true
+set hardware-acceleration-policy=never
+set incsearch=true
+set spell-checking=true
+set scripts=false
+
+set font-size=12
+set monospace-font-size=12
+set input-autohide=true
+
+nmap + zI
+nmap - zO
+nmap = zz
