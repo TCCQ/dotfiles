@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cat /sys/class/backlight/intel_backlight/brightness | sed -e 's_^_(_' -e 's_$_-1)/2_' | bc | sudo tee /sys/class/backlight/intel_backlight/brightness
+

@@ -1,32 +1,47 @@
-15c15
+2a3,4
+> #include <X11/XF86keysym.h>
+> 
+15c17
 < static const char col_cyan[]        = "#005577";
 ---
 > static const char col_cyan[]        = "#ad5fed";
-49c49
+49c51
 < #define MODKEY Mod1Mask
 ---
 > #define MODKEY Mod4Mask
-62a63
+62a65,71
 > static const char *browsercmd[]  = { "vimb", NULL };
-66,67c67,69
+> static const char *bupcmd[]  = { "brightnessup", NULL };
+> static const char *bdowncmd[]  = { "brightnessdown", NULL };
+> static const char *bmaxcmd[]  = { "brightnessmax", NULL };
+> static const char *upvol[]      = { "/usr/bin/amixer",  "set", "Master", "5%+", NULL };
+> static const char *downvol[]    = { "/usr/bin/amixer",  "set", "Master", "5%-", NULL };
+> static const char *mutevol[]    = { "/usr/bin/amixer", "set", "Master", "toggle", NULL };
+66,67c75,83
 < 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 < 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 ---
 > 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 > 	{ MODKEY,                       XK_e,      spawn,          {.v = browsercmd } },
 > 	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
-72c74
+> 	{ 0,                            XF86XK_MonBrightnessUp, spawn,          {.v = bupcmd } },
+> 	{ 0,                            XF86XK_MonBrightnessDown, spawn,          {.v = bdowncmd } },
+> 	{ 0,                            XF86XK_Display, spawn,          {.v = bmaxcmd} },
+> 	{ 0,                            XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
+> 	{ 0,                            XF86XK_AudioMute, spawn, {.v = mutevol } },
+> 	{ 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } },
+72c88
 < 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
 ---
 > 	{ MODKEY,                       XK_o,      incnmaster,     {.i = -1 } },
-75,77c77,78
+75,77c91,92
 < 	{ MODKEY,                       XK_Return, zoom,           {0} },
 < 	{ MODKEY,                       XK_Tab,    view,           {0} },
 < 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
 ---
 > 	{ MODKEY,                       XK_n,      zoom,           {0} },
 > 	{ MODKEY|ShiftMask,             XK_q,      killclient,     {0} },
-101c102
+101c116
 < 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 ---
 > 	{ MODKEY|ShiftMask,             XK_e,      quit,           {0} },
