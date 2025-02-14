@@ -1,3 +1,7 @@
+;;; Various functions functions that are not part of an external package
+
+(provide 'my-funcs)
+
 
 ;; see transparancy in init.el
 (defun toggle-frame-transparency ()
@@ -37,12 +41,12 @@ Similar to pressing ( with the region active."
   "Wraps the following sexp in a pair of parens.
 Places inside the new pair, with prefix arg do the same backwards, pushing the
 mark.  Does the same of ARG number sexps if given"
-  (interactive "P")
+  (interactive "p")
   (message "%s" arg)
   (if arg
       (progn
         (push-mark)
-        (insert-pair -1 ?\( ?\)))
+        (insert-pair arg ?\( ?\)))
     (insert-pair 1 ?\( ?\))))
 
 (defun close-or-kill ()
@@ -125,3 +129,15 @@ BEG and END define the region."
       (goto-char (point-min))
       (while (re-search-forward " +$" nil t)
         (replace-match "" nil nil)))))
+
+(defun open-window-by-buffer (buffer)
+  "Move focus to an extant window by the buffer it contains."
+  (interactive "bBuffer: ")
+  (let ((win (get-buffer-window buffer t)))
+    (if win
+        (select-window win)
+      (switch-to-buffer buffer))))
+
+(defun dired-do-find-marked-files ()
+  (interactive)
+  (seq-do 'find-file (dired-get-marked-files)))

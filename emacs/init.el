@@ -5,20 +5,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-source-correlate-method 'synctex)
- '(TeX-source-correlate-mode t t)
- '(TeX-source-correlate-start-server t t)
- '(TeX-view-program-selection
-   '(((output-dvi has-no-display-manager)
-      "dvi2tty")
-     ((output-dvi style-pstricks)
-      "dvips and gv")
-     (output-dvi "Okular")
-     (output-pdf "Okular")
-     (output-html "xdg-open")))
  '(comment-style 'extra-line)
  '(connection-local-criteria-alist
-   '(((:application tramp :protocol "kubernetes")
+   '(((:application vc-git)
+      vc-git-connection-default-profile)
+     ((:application tramp :protocol "kubernetes")
       tramp-kubernetes-connection-local-default-profile)
      ((:application tramp :protocol "flatpak")
       tramp-container-connection-local-default-flatpak-profile tramp-flatpak-connection-local-default-profile)
@@ -27,7 +18,9 @@
      ((:application eshell)
       eshell-connection-default-profile)))
  '(connection-local-profile-alist
-   '((tramp-flatpak-connection-local-default-profile
+   '((vc-git-connection-default-profile
+      (vc-git--program-version))
+     (tramp-flatpak-connection-local-default-profile
       (tramp-remote-path "/app/bin" tramp-default-remote-path "/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin" "/local/bin" "/local/freeware/bin" "/local/gnu/bin" "/usr/freeware/bin" "/usr/pkg/bin" "/usr/contrib/bin" "/opt/bin" "/opt/sbin" "/opt/local/bin"))
      (tramp-kubernetes-connection-local-default-profile
       (tramp-config-check . tramp-kubernetes--current-context-data)
@@ -116,53 +109,27 @@
       (null-device . "/dev/null"))
      (eshell-connection-default-profile
       (eshell-path-env-list))))
- '(custom-enabled-themes '(tmu-custom))
  '(custom-safe-themes
-   '("9f2e4e8b2ddbfdd392eedbc123649d94654278dee5a53b899557224416413d35" "6dafb31ade9ff07229faaf05c41c2ae475c44731362b792f65f3930b1a2c9cfd" "dc77e008092a5a4aa6b6ed8e4826bebf8f2fb930a8de073bf7f458efd884cca8" "d1ff3e66028f9c527298580d2a64f9e3280f07f9e94d4dada72b67ef15069441" "3d4e3644e237a95683daa73e397c4c0d1ae06bbaaf8040104232591a28bc1315" "12a07bc38295e4b06a8965db261f51ea7ea61fbf91b3ef41298bbb549d1d9403" default))
- '(custom-theme-directory "~/.emacs.d/personal-lisp")
+   '("6f5e3fd2b4245ffe660da69ea5c13ab392337e94776dfb23cc1d8d0f80e3baa2" "1b8c2fd98bf6777d8b95f8cf98fdaede88feee3419ec3e5008f94b56618ac6ca" "0cc5046b7981609166c28b64f6185fa5f73bcb00d21e037f304794c6aaa1f340" "9f2e4e8b2ddbfdd392eedbc123649d94654278dee5a53b899557224416413d35" "6dafb31ade9ff07229faaf05c41c2ae475c44731362b792f65f3930b1a2c9cfd" "dc77e008092a5a4aa6b6ed8e4826bebf8f2fb930a8de073bf7f458efd884cca8" "d1ff3e66028f9c527298580d2a64f9e3280f07f9e94d4dada72b67ef15069441" "3d4e3644e237a95683daa73e397c4c0d1ae06bbaaf8040104232591a28bc1315" "12a07bc38295e4b06a8965db261f51ea7ea61fbf91b3ef41298bbb549d1d9403" default))
  '(ede-project-directories
    '("/home/tmu/Desktop/eway/sway" "/home/tmu/Desktop/eway/cage" "/home/tmu/Desktop/eway/wlroots" "/home/tmu/Desktop/eway/comp" "/home/tmu/Desktop/eway"))
- '(evil-collection-mode-list
-   '(2048-game ag alchemist anaconda-mode apropos arc-mode atomic-chrome auto-package-update beginend bluetooth bm bookmark
-               (buff-menu "buff-menu")
-               calendar cider cmake-mode color-rg comint company compile consult corfu crdt
-               (custom cus-edit)
-               cus-theme dashboard daemons deadgrep debbugs debug devdocs dictionary diff-hl diff-mode dired dired-sidebar disk-usage distel doc-view docker ebib ebuku edbi edebug ediff eglot elpaca ement explain-pause-mode eldoc elfeed elisp-mode elisp-refs elisp-slime-nav embark emms emoji epa ert eshell eval-sexp-fu evil-mc eww fanyi finder flycheck flymake forge free-keys geiser ggtags git-timemachine gited gnus go-mode grep guix hackernews helm help helpful hg-histedit hungry-delete ibuffer
-               (image image-mode)
-               image-dired image+ imenu imenu-list
-               (indent "indent")
-               indium info ivy js2-mode leetcode lispy lms log-edit log-view lsp-ui-imenu lua-mode kotlin-mode macrostep man
-               (magit magit-repos magit-submodule)
-               magit-section magit-todos markdown-mode monky mpc mpdel mu4e mu4e-conversation neotree newsticker notmuch nov omnisharp org org-present org-roam osx-dictionary outline p4
-               (package-menu package)
-               pass
-               (pdf pdf-view)
-               popup proced
-               (process-menu simple)
-               prodigy profiler python quickrun racer racket-describe realgud reftex replace restclient rg ripgrep rjsx-mode robe rtags ruby-mode scheme scroll-lock selectrum sh-script shortdoc simple simple-mpc slime sly snake so-long speedbar tab-bar tablist tabulated-list tar-mode telega
-               (term term ansi-term multi-term)
-               tetris thread tide timer-list transmission trashed tuareg typescript-mode vc-annotate vc-dir vc-git vdiff vertico view vlf vterm vundo w3m wdired wgrep which-key woman xref xwidget yaml-mode youtube-dl zmusic
-               (ztree ztree-diff ztree-dir)))
+ '(eglot-events-buffer-config '(:size 0 :format full))
+ '(gdb-non-stop-setting nil)
  '(helm-minibuffer-history-key "M-p")
  '(menu-bar-mode nil)
  '(package-selected-packages
-   '(counsel hide-lines 2048-game async auctex benchmark-init bongo buffer-move calc-prog-utils chinese-conv company-cabal company-go dumb-jump eat emms emms-player-simple-mpv emms-state esh-help eshell-fringe-status eshell-vterm esup evil evil-collection evil-commentary evil-easymotion evil-snipe evil-surround exwm eyebrowse fish-mode flymake-diagnostic-at-point fold-this folding free-keys frog-jump-buffer gdscript-mode gxref haskell-mode helm-hoogle highlight hindent hydra ibuffer-project imenu-anywhere ivy-prescient oauth2 persp-mode persp-mode-projectile-bridge popwin pyim-basedict pyim-cangjiedict pyim-wbdict rustic shm sideline-flymake sideline-lsp solarized-theme tree-sitter unicode-fonts volume workgroups xelb))
- '(persp-restore-window-conf-method nil)
- '(pyim-assistant-scheme 'quanpin)
+   '(em-term em-hist embark-consult embark eat em-smart all-the-icons-completion all-the-icons marginalia visible-mark benchmark-init sideline-lsp sideline-flymake sideline-flycheck sideline lsp-haskell lsp-sourcekit emacs-lsp elisp-sandbox elsa lsp-mode corfu evil-config which-key orderless vertico evil))
+ '(pyim-assistant-scheme 'cangjie)
  '(safe-local-variable-values '((LEXICAL-binding . t)))
  '(scroll-bar-mode nil)
  '(tags-revert-without-query t)
  '(tool-bar-mode nil)
  '(transient-mark-mode nil)
  '(whitespace-style
-   '(face trailing tabs lines-tail missing-newline-at-eof indentation space-after-tab space-before-tab tab-mark))
- '(xref-show-definitions-function 'xref-show-definitions-buffer-at-bottom))
+   '(face trailing tabs lines-tail missing-newline-at-eof indentation space-after-tab space-before-tab tab-mark) t))
 
-;; (use-package benchmark-init
-;;   :ensure t
-;;   :config
-;;   ;; To disable collection of benchmark data after init is done.
-;;   (add-hook 'after-init-hook 'benchmark-init/deactivate))
+;; ---------------------------------------------------------------------
+;; non-package specific config
 
 ;; performance stuff
 (setq gc-cons-threshold most-positive-fixnum)
@@ -171,31 +138,241 @@
             (setq gc-cons-threshold (expt 2 23))))
 
 ;; allow using emacsclient
-(load "server")
+(require 'server)
 (unless (server-running-p) (server-start))
 
 ;; buffer preferences
 (with-current-buffer "*scratch*" (emacs-lock-mode 'kill))
-(setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions)) ;; don't ask about killing buffers
-(setq confirm-kill-processes nil) ;; don't ask about kill processes
+(setq kill-buffer-query-functions
+      (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
+;; don't ask about killing buffers
+(setq confirm-kill-processes nil)
+;; don't ask about kill processes
+
+
+(setq async-shell-command-buffer 'new-buffer)
+;; start additional async shell commands in new buffers without asking
+(setq-default proced-auto-update-flag t)
+;; always auto update proced
+
+;; --------------------------------------------------------------------
+;; external packages
+
+(use-package benchmark-init
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 ;; enable external packages
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(push "~/.emacs.d/site-lisp/" load-path)
 (package-initialize)
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
+;; (setq use-package-always-demand t)
 
-;; general editing config for everywhere
-(electric-pair-mode 1)
-(global-hl-line-mode 1)
-(global-hl-todo-mode 1)
-(global-auto-revert-mode 1)
-(setq-default indent-tabs-mode nil) ;; no tabs
-(setq fill-column 80)
-(setq whitespace-style
-      '(face trailing tabs missing-newline-at-eof indentation space-after-tab space-before-tab tab-mark))
+(use-package vertico
+  ;; better minibuffer complete
+  :init
+  (vertico-mode)
+  ;; (vertico-flat-mode)
+  (setq vertico-cycle t))
 
-;; nice startup
-(add-to-list 'default-frame-alist '(alpha-background . 90)) ;; transparancy
+(use-package marginalia
+  :init
+  (marginalia-mode)
+  (keymap-set minibuffer-local-map "M-A" 'marginalia-cycle)
+  :custom
+  (marginalia-max-relative-age 0)
+  (marginalia-align 'right))
+
+(use-package embark
+  :bind
+  (("C-." . embark-act)         ;; pick some comfortable binding
+   ("C-," . embark-dwim)        ;; good alternative: M-.
+   ("C-h B" . embark-bindings)  ;; alternative for `describe-bindings'
+   )
+  :init
+  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  :config
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+(use-package all-the-icons)
+(use-package all-the-icons-completion
+  :after (marginalia all-the-icons)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :init (all-the-icons-completion-mode))
+
+(use-package orderless
+  ;; ordering (minibuffer) completions
+  :custom
+  (completion-styles '(orderless basic))
+  (orderless-matching-styles '(orderless-prefixes orderless-initialism orderless-literal orderless-regexp))
+  ;; (orderless-skip-highlighting t)
+  )
+
+(use-package corfu
+  ;; in buffer completion
+  :init
+  (global-corfu-mode 1)
+  (defun corfu-commit-single ()
+    "Complete without asking if there is only one candidate."
+    (when (and (corfu--popup-visible-p)
+               (= (length corfu--candidates) 1))
+      (corfu-accept)))
+  (add-hook 'corfu-post-command-hook 'corfu-commit-single)
+  :custom
+  (corfu-cycle t)
+  (corfu-quit-no-match t)
+  :bind (("M-/" . completion-at-point)))
+
+(use-package cape
+  ;; extend completion frameworks
+  :bind ("C-c p" . cape-prefix-map)
+  :config
+  (advice-add 'pcomplete-completions-at-point :around 'cape-wrap-silent)
+  (advice-add 'pcomplete-completions-at-point :around 'cape-wrap-purify)
+  :custom
+  (completion-at-point-functions . '(cape-dict
+                                     tags-completion-at-point-function
+                                     cape-keyword
+                                     cape-dabbrev
+                                     cape-symbol)))
+
+(use-package dabbrev
+  ;; Swap M-/ and C-M-/
+  :bind ( ;; ("M-/" . completion-at-point)
+         ("C-M-/" . dabbrev-expand))
+  :config
+  (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
+  ;; Since 29.1, use `dabbrev-ignored-buffer-regexps' on older.
+  (add-to-list 'dabbrev-ignored-buffer-modes 'doc-view-mode)
+  (add-to-list 'dabbrev-ignored-buffer-modes 'pdf-view-mode)
+  (add-to-list 'dabbrev-ignored-buffer-modes 'tags-table-mode))
+
+(use-package tempel
+  :after (cape)
+  :custom
+  (tempel-path "~/.emacs.d/templates/*.eld")
+  ;; (tempel-trigger-prefix "<")
+
+  :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
+         ("M-*" . tempel-insert))
+
+  :config
+  ;; Setup completion at point
+  (defun tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'.
+    ;; `tempel-expand' only triggers on exact matches. Alternatively use
+    ;; `tempel-complete' if you want to see all matches, but then you
+    ;; should also configure `tempel-trigger-prefix', such that Tempel
+    ;; does not trigger too often when you don't expect it. NOTE: We add
+    ;; `tempel-expand' *before* the main programming mode Capf, such
+    ;; that it will be tried first.
+    (setq-local completion-at-point-functions
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
+
+  (add-hook 'conf-mode-hook 'tempel-setup-capf)
+  (add-hook 'prog-mode-hook 'tempel-setup-capf)
+  (add-hook 'text-mode-hook 'tempel-setup-capf)
+
+  ;; Optionally make the Tempel templates available to Abbrev,
+  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
+  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
+  ;; (global-tempel-abbrev-mode)
+  )
+
+;; (use-package tempel-collection
+;;   :after tempel)
+
+(use-package which-key
+  :init
+  (which-key-mode))
+
+(use-package ibuffer
+  :custom
+  (ibuffer-formats
+   '((mark modified read-only " "
+           (name 50 50 :left :elide) ; was originally 18
+           " "
+           (size 9 -1 :right)
+           " "
+           (mode 16 16 :left :elide)
+           " " filename-and-process)
+     (mark " "
+           (name 16 -1)
+           " " filename))))
+
+(use-package buffer-move
+  :bind ("C-x -" . buf-move-right))
+
+(use-package consult
+  :custom (consult-preview-excluded-buffers '(major-mode . exwm-mode))
+  :bind ("C-x b" . consult-buffer))
+
+;; (use-package beacon
+;;   :init
+;;   (beacon-mode 1)
+;;   (push 'vterm-mode beacon-dont-blink-major-modes))
+
+(use-package visible-mark
+  :init
+  (global-visible-mark-mode 1)
+  (set-face-attribute 'visible-mark-active nil
+                      :foreground 'unspecified
+                      :background 'unspecified
+                      :box '(:line-width (-1 . -1)
+                                         :color "deep pink"
+                                         :style nil))
+  :custom
+  (visible-mark-max 1)
+  )
+
+;; eshell stuff
+(use-package eshell
+  :init
+  (use-package esh-help)
+  (setup-esh-help-eldoc)
+  (require 'em-hist)
+  (require 'em-term)
+  (keymap-set eshell-hist-mode-map "C-p" 'eshell-previous-input)
+  (keymap-set eshell-hist-mode-map "C-n" 'eshell-next-input)
+  (keymap-set eshell-hist-mode-map "C-c C-n" 'next-line)
+  (keymap-set eshell-hist-mode-map "C-c C-p" 'previous-line)
+  (keymap-set eshell-mode-map "C-l" 'eshell/clear)
+  (add-hook 'eshell-mode-hook 'eldoc-mode))
+
+(use-package eat
+  :init
+  (add-hook 'eshell-load-hook #'eat-eshell-mode)
+  (add-hook 'eshell-load-hook #'eat-eshell-visual-command-mode)
+  (push "pass" eshell-visual-commands))
+
+;; ----------------------------------------------------------------------
+;; my custom stuff
+
+;; (require 'evil-config)
+(require 'my-funcs)
+(require 'my-binds)
+(require 'coding-config)
+(require 'modeline-config)
+(require 'general-text)
+(require 'exwm-pref)
+
+;; ----------------------------------------------------------------------
+;; theme stuff
+
+(require 'tmu-custom-theme)
+(push "~/.emacs.d/site-lisp/" custom-theme-load-path)
+(load-theme 'tmu-custom t)
+
+;; comfy scratch buffer
 (require 'iimage)
 (setq inhibit-startup-screen t)
 (setq initial-scratch-message (concat (propertize ";; " 'invisible t)
@@ -207,51 +384,19 @@
                                 (with-current-buffer "*scratch*"
                                   (iimage-mode 1))))
 
-(use-package vertico
-  ;; better minibuffer complete
-  :init
-  (vertico-mode)
-  (vertico-flat-mode)
-  (setq vertico-cycle t))
+;; ----------------------------------------------------------------------
+;; Things emacs sets programatically
+(put 'dired-find-alternate-file 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'list-timers 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 
-(use-package orderless
-  ;; ordering minibuffer completions
-  :ensure t
-  :custom
-  (completion-styles '(orderless partial-completion flex basic))
-  (orderless-matching-styles '(orderless-literal orderless-regexp orderless-prefixes))
-  ;; (orderless-skip-highlighting t)
-  ;; (selectrum-highlight-candidates-function #'orderless-highlight-matches)
-  )
+(load-theme 'tmu-custom t)
 
-(use-package which-key
-  :ensure t
-  :init
-  (which-key-mode))
-
-;; frog jump stuff
-(add-hook 'frog-menu-after-init-hook (lambda ()
-                                       (setq-local avy-background nil)))
-
-(load-file "~/.emacs.d/personal-lisp/custom-funcs.el")
-(load-file "~/.emacs.d/personal-lisp/evil-conf.el")
-(load-file "~/.emacs.d/personal-lisp/general-text.el")
-(load-file "~/.emacs.d/personal-lisp/tex-conf.el")
-(load-file "~/.emacs.d/personal-lisp/coding-config.el")
-(load-file "~/.emacs.d/personal-lisp/single-header.el")
-(load-file "~/.emacs.d/personal-lisp/chinese.el")
-(load-file "~/.emacs.d/personal-lisp/custom-binds.el")
-;; (load-file "~/.emacs.d/exwm-pref.el")
-
-;; emacs mechanically set stuff
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-(put 'dired-find-alternate-file 'disabled nil)
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(put 'list-timers 'disabled nil)
-(put 'narrow-to-region 'disabled nil)

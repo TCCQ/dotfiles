@@ -55,9 +55,21 @@
     (with-face str 'single-header)))
 
 
-(setq global-mode-string '("" (:eval (concat (with-face (format " [%s]  " default-directory)
-                                                        :weight 'bold
-                                                        :foreground "green2")))))
+(defun shorten-path (path)
+  "Shortens each directory in PATH except for the last directory to its first character."
+  (let* ((components (split-string path "/"))  ; Split the path into components
+         (last-component (-last (lambda (s) (not (string-empty-p s))) components))  ; Extract the last component
+         (shortened-components  ; Shorten all components except the last
+          (mapcar (lambda (comp)
+                    (if (or (string-equal comp last-component) (string-empty-p comp))
+                        comp
+                      (substring comp 0 1)))
+                  components)))
+    (mapconcat 'identity shortened-components "/")))  ; Recombine components into a path
+
+;; (setq global-mode-string '("" (:eval (concat (with-face (format " [%s]  " (shorten-path default-directory))
+;;                                                         :weight 'bold
+;;                                                         :foreground "green2")))))
 
 (defun single-header-init-buffer (buf)
   (with-current-buffer buf
@@ -121,11 +133,11 @@
       (erase-buffer)
       (insert (eval single-header-format)))))
 
-(add-hook 'after-make-frame-functions (lambda (frame)
-                                        (with-selected-frame frame
-                                       (single-header-show single-header--current-header-buffer))))
+;; (add-hook 'after-make-frame-functions (lambda (frame)
+;;                                         (with-selected-frame frame
+;;                                        (single-header-show single-header--current-header-buffer))))
 
 ;; do init frame seperately
-(single-header-show single-header--current-header-buffer)
-(run-with-timer 0 1 'single-header-update)
+;; (single-header-show single-header--current-header-buffer)
+;; (run-with-timer 0 1 'single-header-update)
 

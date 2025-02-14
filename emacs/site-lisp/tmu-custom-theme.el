@@ -1,3 +1,5 @@
+(provide 'tmu-custom-theme)
+
 (deftheme tmu-custom
   "Created 2023-01-06.")
 
